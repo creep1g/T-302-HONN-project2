@@ -11,7 +11,7 @@ class BuyerRepository:
         exists = self.get_buyer(ssn=buyer.ssn)
         if exists is None:
             self.__conn.execute(f'''
-                                INSERT INTO BUYERS(name, ssn, email, phone)
+                                INSERT INTO buyers(name, ssn, email, phone)
                                 VALUES(
                                 '{buyer.name}',
                                 '{buyer.ssn}',
@@ -21,12 +21,12 @@ class BuyerRepository:
                                 ''')
             self.__conn.commit()
 
-            buyer_id = self.__conn.execute('''SELECT ID FROM BUYERS
+            buyer_id = self.__conn.execute('''SELECT ID FROM buyers
                                                 ORDER BY ID Desc
                                                 LIMIT 1''')
             print(buyer_id)
         else:
-            buyer_id = self.__conn.execute(f'''SELECT ID FROM BUYERS
+            buyer_id = self.__conn.execute(f'''SELECT ID FROM buyers
                                            WHERE SSN = '{buyer.ssn}' ''')
 
         return buyer_id[0][0]
@@ -35,10 +35,10 @@ class BuyerRepository:
                   ssn: Optional[str] = None) -> BuyerModel:
 
         if ssn is not None:
-            buyer_response = self.__conn.execute(f'''SELECT * FROM BUYERS
+            buyer_response = self.__conn.execute(f'''SELECT * FROM public.buyers
                                                  WHERE ssn = '{ssn}' ''')
         elif buyer_id is not None:
-            buyer_response = self.__conn.execute(f'''SELECT * FROM BUYERS
+            buyer_response = self.__conn.execute(f'''SELECT * FROM public.buyers
                                                  WHERE ID = {buyer_id}''')
         else:
             buyer_response = []
