@@ -19,13 +19,37 @@ services:
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=password
       - POSTGRES_DB=buyers
-    ports:
-      - 5432:5432
     volumes:
       - buyers-db_data:/var/lib/postgres/data
       - ./BuyerDb:/docker-entrypoint-initdb.d/
     networks:
       - buyernet
+
+  merchant_service:
+    build: ./MerchantService
+    stdin_open: true
+    tty: true
+    depends_on:
+      - merchant_db
+    ports:
+      - 0.0.0.0:8001:8001
+    networks:
+      - storenet
+      - merchantnet  
+
+  merchant_db:
+    image: postgres
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=password
+      - POSTGRES_DB=merchants
+    volumes:
+      - merchant-db_data:/var/lib/postgres/data
+      - ./MerchantDb:/docker-entrypoint-initdb.d/
+    networks:
+      - merchantnet
+
+
 
 networks:
   storenet:
@@ -34,6 +58,11 @@ networks:
   buyernet:
     driver: bridge
 
+  merchantnet:
+    driver: bridge
+
 volumes:
+  merchant-db_data:
+  merchant_service:
   buyers-db_data:
   buyer_service:

@@ -16,7 +16,7 @@ class BuyerRepository:
                                 '{buyer.name}',
                                 '{buyer.ssn}',
                                 '{buyer.email}',
-                                '{buyer.phone}'
+                                '{buyer.phoneNumber}'
                                 )
                                 ''')
             self.__conn.commit()
@@ -47,7 +47,7 @@ class BuyerRepository:
             buyer = BuyerModel(name=buyer_response[0][1],
                                ssn=buyer_response[0][2],
                                email=buyer_response[0][3],
-                               phone=buyer_response[0][4])
+                               phoneNumber=buyer_response[0][4])
         else:
             buyer = None
 
