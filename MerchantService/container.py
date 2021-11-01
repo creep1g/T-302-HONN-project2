@@ -20,7 +20,7 @@ class Container(containers.DeclarativeContainer):
         __db_config
     )
 
-    buyer_repository_provider = providers.Singleton(
+    merchant_repository_provider = providers.Singleton(
         MerchantRepository,
         db_connection_provider
     )

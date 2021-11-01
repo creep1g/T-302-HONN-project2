@@ -1,6 +1,7 @@
 asposestorage==1.0.2
+python-dotenv
 dependency_injector==4.36.0
 fastapi==0.70.0
-psycopg2==2.9.1
+psycopg2-binary
 pydantic==1.8.2
 uvicorn==0.15.0
