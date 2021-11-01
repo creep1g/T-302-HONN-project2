@@ -2,7 +2,7 @@ from dependency_injector import containers, providers
 
 from dbConnections.db_config import DbConfig
 from dbConnections.postgres_db_connection import PostgresDbConnection
-from merchant_repository import MerchantRepository
+from buyer_repository import BuyerRepository
 from Settings import Settings
 
 
@@ -20,7 +20,7 @@ class Container(containers.DeclarativeContainer):
         __db_config
     )
 
-    merchant_repository_provider = providers.Singleton(
-        MerchantRepository,
+    buyer_repository_provider = providers.Singleton(
+        BuyerRepository,
         db_connection_provider
     )
