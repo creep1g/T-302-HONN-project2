@@ -49,6 +49,30 @@ services:
     networks:
       - merchantnet
 
+  inventory_service:
+    build: ./InventoryService
+    stdin_open: true
+    tty: true
+    depends_on:
+      - inventory_db
+    ports:
+      - 0.0.0.0:8003:8003
+    networks:
+      - storenet
+      - inventorynet
+
+  inventory_db:
+    image: postgres
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=password
+      - POSTGRES_DB=inventory
+    volumes:
+      - inventory-db_data:/var/lib/postgres/data
+      - ./InventoryDb:/docker-entrypoint-initdb.d/
+    networks:
+      - inventorynet
+
   order_service:
     build: ./OrderService
     stdin_open: true
@@ -101,6 +125,9 @@ networks:
   ordernet:
     driver: bridge
 
+  inventorynet:
+    driver: bridge
+
 volumes:
   rabbitmq:
   order-db_data:
@@ -109,3 +136,5 @@ volumes:
   merchant_service:
   buyers-db_data:
   buyer_service:
+  inventory_service:
+  inventory-db_data:
