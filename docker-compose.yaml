@@ -6,12 +6,12 @@ services:
     stdin_open: true
     tty: true
     depends_on:
-      - buyer_db
+      - buyers_db
     ports:
       - 0.0.0.0:8002:8002
     networks:
       - storenet
-      - buyernet  
+      - buyernet
 
   buyers_db:
     image: postgres
@@ -35,7 +35,7 @@ services:
       - 0.0.0.0:8001:8001
     networks:
       - storenet
-      - merchantnet  
+      - merchantnet
 
   merchant_db:
     image: postgres
@@ -60,7 +60,7 @@ services:
       - 0.0.0.0:8000:8000
     networks:
       - storenet
-      - ordernet  
+      - ordernet
 
   order_db:
     image: postgres
