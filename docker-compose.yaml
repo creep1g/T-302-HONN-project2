@@ -49,7 +49,44 @@ services:
     networks:
       - merchantnet
 
+  order_service:
+    build: ./OrderService
+    stdin_open: true
+    tty: true
+    depends_on:
+      - order_db
+      - rabbitmq
+    ports:
+      - 0.0.0.0:8000:8000
+    networks:
+      - storenet
+      - ordernet  
 
+  order_db:
+    image: postgres
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=password
+      - POSTGRES_DB=orders
+    volumes:
+      - order-db_data:/var/lib/postgres/data
+      - ./OrderDb:/docker-entrypoint-initdb.d/
+    networks:
+      - ordernet
+
+  rabbitmq:
+    image: "rabbitmq:3-management"
+    hostname: "rabbit1"
+    environment:
+      RABBITMQ_DEFAULT_USER: "guest"
+      RABBITMQ_DEFAULT_PASS: "guest"
+    ports:
+      - 15672:15672
+      - 5672:5672
+    labels:
+      name: "rabbitmq1"
+    networks:
+      - storenet
 
 networks:
   storenet:
@@ -61,7 +98,13 @@ networks:
   merchantnet:
     driver: bridge
 
+  ordernet:
+    driver: bridge
+
 volumes:
+  rabbitmq:
+  order-db_data:
+  order_service:
   merchant-db_data:
   merchant_service:
   buyers-db_data:

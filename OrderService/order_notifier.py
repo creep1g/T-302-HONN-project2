@@ -15,7 +15,7 @@ class OrderNotifier:
     @retry(pika.exceptions.AMQPConnectionError, delay=5, jitter=(1, 3))
     def __get_connection(self):
         connection = pika.BlockingConnection(
-            pika.ConnectionParameters(host='localhost', port=5672))
+            pika.ConnectionParameters(host='rabbit1', port=5672))
         channel = connection.channel()
         channel.queue_declare(queue='order')
 
