@@ -1,4 +1,5 @@
 from pydantic import BaseModel
+from typing import Optional
 
 
 class InventoryModel(BaseModel):
@@ -6,4 +7,4 @@ class InventoryModel(BaseModel):
     productName: str
     price: float
     quantity: int
-    reserved: int
+    reserved: Optional[int]
