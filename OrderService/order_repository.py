@@ -37,10 +37,10 @@ class OrderRepository:
 
         if len(order) > 0:
             order = OrderModelGet(productId=order[0][1],
-                               merchantId=order[0][2],
-                               buyerId=order[0][3],
-                               cardNumber=order[0][4],
-                               totalPrice=order[0][6])
+                                  merchantId=order[0][2],
+                                  buyerId=order[0][3],
+                                  cardNumber=order[0][4],
+                                  totalPrice=order[0][6])
         else:
             order = None
 
