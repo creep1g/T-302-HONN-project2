@@ -1,9 +1,19 @@
 from pydantic import BaseModel
+from typing import Optional
 
 
-class OrderModel(BaseModel):
+class OrderModelSend(BaseModel):
     productId: int
     merchantId: int
     buyerId: int
     creditCard: dict
     discount: float
+    totalPrice: Optional[float]
+
+
+class OrderModelGet(BaseModel):
+    productId: int
+    merchantId: int
+    buyerId: int
+    cardNumber: str
+    totalPrice: float

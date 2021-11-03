@@ -1,13 +1,13 @@
 import pika
 from retry import retry
-from models.order_model import OrderModel
+from models.order_model import OrderModelSend
 
 
 class OrderNotifier:
     def __init__(self) -> None:
         self.__conn = self.__get_connection()
 
-    def notify(self, order: OrderModel):
+    def notify(self, order: OrderModelSend):
         self.__conn.basic_publish(exchange='',
                                         routing_key='order',
                                         body=order.json())
