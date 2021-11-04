@@ -35,10 +35,12 @@ class InventoryProcessing:
 
     def payment_proccessing(self):
         print("in payment_proccessing")
-        self.__conn1.basic_consume(
-            queue='paymentSuccess', on_message_callback=self.payment_success_callback())
+        self.__conn.basic_consume(
+            queue='paymentSuccess',
+            on_message_callback=self.payment_success_callback(),
+            auto_ack=True)
         self.__conn.start_consuming()
-        self.__conn2.basic_consume(
+        self.__conn.basic_consume(
             queue='paymentFailure', on_message_callback=self.payment_failure_callback())
         self.__conn.start_consuming()
 

@@ -22,7 +22,8 @@ class Container(containers.DeclarativeContainer):
     )
 
     inventory_proccessing_provider = providers.Singleton(
-        InventoryProcessing
+        InventoryProcessing,
+        db_connection_provider
     )
 
     inventory_repository_provider = providers.Singleton(
