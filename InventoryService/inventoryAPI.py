@@ -16,6 +16,11 @@ async def create_product(product: InventoryModel, InventoryRepo: InventoryReposi
     return InventoryRepo.create_product(product)
 
 
+@router.patch('/products/{id}', status_code=201)
+@inject
+async def reserve_product(id: int, InventoryRepo: InventoryRepository = Depends(Provide[Container.inventory_repository_provider])):
+    return InventoryRepo.reserve_product(product_id=id)
+
 @router.get('/products/{id}', status_code=200)
 @inject
 async def get_product(id: int, InventoryRepo: InventoryRepository = Depends(

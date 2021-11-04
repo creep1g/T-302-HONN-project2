@@ -51,3 +51,11 @@ class InventoryRepository:
         else:
             product = None
         return product
+
+    def reserve_product(self, product_id: int) -> None:
+        self.__conn.execute(f'''
+                            UPDATE inventory
+                            SET reserved = reserved + 1
+                            WHERE id = {product_id}
+                            ''')
+        self.__conn.commit()
