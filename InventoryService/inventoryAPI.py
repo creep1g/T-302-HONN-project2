@@ -11,7 +11,6 @@ router = APIRouter()
 @router.post('/products', status_code=201)
 @inject
 async def create_product(product: InventoryModel, InventoryRepo: InventoryRepository = Depends(Provide[Container.inventory_repository_provider])):
-    print("HELOOOO")
     return InventoryRepo.create_product(product)
 
 
@@ -21,5 +20,5 @@ async def get_product(id: int, InventoryRepo: InventoryRepository = Depends(
         Provide[Container.inventory_repository_provider])):
     product = InventoryRepo.get_product(id)
     if product is None:
-        return JSONResponse(status_code=404)
+        return JSONResponse(status_code=404, content="Product does not exist")
     return InventoryRepo.get_product(id)

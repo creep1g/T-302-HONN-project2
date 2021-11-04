@@ -8,7 +8,6 @@ class InventoryRepository:
         self.__conn = db_connection
 
     def create_product(self, product: InventoryModel) -> int:
-        print("in here")
         exists = self.get_product(productName=product.productName)
         if exists is None:
             self.__conn.execute(f'''
@@ -32,7 +31,6 @@ class InventoryRepository:
         else:
             product_id = self.__conn.execute(f'''SELECT ID FROM inventory
                                            WHERE productName = '{product.productName}' ''')
-        print("product: ", product)
         return product_id[0][0]
 
     def get_product(self, product_id: Optional[int] = None, productName: Optional[str] = None) -> InventoryModel:
