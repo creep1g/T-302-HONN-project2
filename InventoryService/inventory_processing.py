@@ -19,7 +19,7 @@ class InventoryProcessing:
         self.__dbConn.execute(
             f''' UPDATE inventory SET quantity = quantity - 1 WHERE id = '{product_id}' ''')
         self.__dbConn.execute(
-            f''' UPDATE inventory SET reserved = '{0}' WHERE id = '{product_id}' ''')
+            f''' UPDATE inventory SET reserved = reserved - 1 WHERE id = '{product_id}' ''')
         self.__dbConn.commit()
         # hættaaðtakafrátiltekna vöru og minnka fjöldi vara in stock
 
@@ -29,7 +29,7 @@ class InventoryProcessing:
         body = json.loads(body)
         product_id = (body["productId"])
         self.__dbConn.execute(
-            f''' UPDATE inventory SET reserved = '{0}' WHERE id = '{product_id}' ''')
+            f''' UPDATE inventory SET reserved = reserved - 1 WHERE id = '{product_id}' ''')
         self.__dbConn.commit()
 
     def payment_proccessing(self):
