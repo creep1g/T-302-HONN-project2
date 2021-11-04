@@ -110,7 +110,6 @@ services:
     networks:
       - payment_net
 
-
   payment_service:
     build: ./PaymentService
     stdin_open: true

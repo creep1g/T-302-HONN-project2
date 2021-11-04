@@ -1,26 +1,18 @@
 from dependency_injector import containers, providers
 
-from dbConnections.db_config import DbConfig
-from dbConnections.postgres_db_connection import PostgresDbConnection
-from buyer_repository import BuyerRepository
+from email_config import EmailConfig
 from Settings import Settings
+from email_handler import EmailHandler
 
 
 class Container(containers.DeclarativeContainer):
     config: Settings = providers.Configuration()
 
-    __db_config = providers.Singleton(DbConfig,
-                                      host=config.postgres_log_host,
-                                      user=config.postgres_log_user,
-                                      database=config.postgres_log_database,
-                                      password=config.postgres_log_password)
+    __email_config = providers.Singleton(EmailConfig,
+                                         username=config.email_username,
+                                         password=config.email_password)
 
-    db_connection_provider = providers.Singleton(
-        PostgresDbConnection,
-        __db_config
-    )
-
-    buyer_repository_provider = providers.Singleton(
-        BuyerRepository,
-        db_connection_provider
+    email_handler_provider = providers.Singleton(
+        EmailHandler,
+        __email_config
     )

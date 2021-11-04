@@ -3,6 +3,7 @@ from dependency_injector import containers, providers
 from dbConnections.db_config import DbConfig
 from dbConnections.postgres_db_connection import PostgresDbConnection
 from inventory_repository import InventoryRepository
+from inventory_processing import InventoryProcessing
 from Settings import Settings
 
 
@@ -18,6 +19,10 @@ class Container(containers.DeclarativeContainer):
     db_connection_provider = providers.Singleton(
         PostgresDbConnection,
         __db_config
+    )
+
+    inventory_proccessing_provider = providers.Singleton(
+        InventoryProcessing
     )
 
     inventory_repository_provider = providers.Singleton(

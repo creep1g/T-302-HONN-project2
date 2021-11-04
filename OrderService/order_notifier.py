@@ -8,6 +8,7 @@ class OrderNotifier:
         self.__conn = self.__get_connection()
 
     def notify(self, order: OrderModelSend):
+        print("---------- IN OrderNotifier Notify ----------")
         self.__conn.basic_publish(exchange='',
                                   routing_key='order',
                                   body=order.json())
