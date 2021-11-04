@@ -4,6 +4,8 @@ from fastapi.responses import JSONResponse
 from container import Container
 from models.inventory_model import InventoryModel
 from inventory_repository import InventoryRepository
+from inventory_processing import InventoryProcessing
+import threading
 
 router = APIRouter()
 
@@ -22,3 +24,10 @@ async def get_product(id: int, InventoryRepo: InventoryRepository = Depends(
     if product is None:
         return JSONResponse(status_code=404, content="Product does not exist")
     return InventoryRepo.get_product(id)
+
+
+@router.on_event('startup')
+@inject
+async def get_message(message_receiver: InventoryProcessing = Provide[Container.inventory_proccessing_provider]):
+    thread = threading.Thread(target=message_receiver.payment_proccessing)
+    thread.start()

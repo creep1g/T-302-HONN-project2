@@ -14,34 +14,33 @@ class InventoryProcessing:
         print("in payment_success_callback")
         body = body.decode("utf-8")
         body = json.loads(body)
-        order_id = (body["orderId"])
+        product_id = (body["productId"])
+        print("product_id: ", product_id)
         self.__dbConn.execute(
-            f''' UPDATE inventory SET quantity = Quantity + 1 WHERE id = '{order_id}' ''')
+            f''' UPDATE inventory SET quantity = quantity - 1 WHERE id = '{product_id}' ''')
         self.__dbConn.execute(
-            f''' UPDATE inventory SET reserved = '{0}' WHERE id = '{order_id}' ''')
+            f''' UPDATE inventory SET reserved = '{0}' WHERE id = '{product_id}' ''')
         self.__dbConn.commit()
-        ch.basic_ack(delivery_tag=method.delivery_tag)
         # hættaaðtakafrátiltekna vöru og minnka fjöldi vara in stock
 
     def payment_failure_callback(self, ch, method, properties, body):
         print("in payment_failure_callback")
         body = body.decode("utf-8")
         body = json.loads(body)
-        order_id = (body["orderId"])
+        product_id = (body["productId"])
         self.__dbConn.execute(
-            f''' UPDATE inventory SET reserved = '{0}' WHERE id = '{order_id}' ''')
+            f''' UPDATE inventory SET reserved = '{0}' WHERE id = '{product_id}' ''')
         self.__dbConn.commit()
-        ch.basic_ack(delivery_tag=method.delivery_tag)
 
     def payment_proccessing(self):
         print("in payment_proccessing")
         self.__conn.basic_consume(
             queue='paymentSuccess',
-            on_message_callback=self.payment_success_callback(),
+            on_message_callback=self.payment_success_callback,
             auto_ack=True)
         self.__conn.start_consuming()
         self.__conn.basic_consume(
-            queue='paymentFailure', on_message_callback=self.payment_failure_callback())
+            queue='paymentFailure', on_message_callback=self.payment_failure_callback, auto_ack=True)
         self.__conn.start_consuming()
 
     @retry(pika.exceptions.AMQPConnectionError, delay=5, jitter=(1, 3))
