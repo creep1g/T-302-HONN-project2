@@ -9,8 +9,8 @@ class OrderNotifier:
 
     def notify(self, order: OrderModelSend):
         self.__conn.basic_publish(exchange='',
-                                        routing_key='order',
-                                        body=order.json())
+                                  routing_key='order',
+                                  body=order.json())
 
     @retry(pika.exceptions.AMQPConnectionError, delay=5, jitter=(1, 3))
     def __get_connection(self):

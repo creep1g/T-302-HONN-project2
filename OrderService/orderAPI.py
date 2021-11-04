@@ -47,9 +47,11 @@ async def create_order(order: OrderModelSend,
         return JSONResponse(status_code=400, content={"message": "Merchant does not allow discount"})
 
     order.totalPrice = get_total_price(order)
-    order_notifier.notify(order)
+    order_id = OrderRepo.create_order(order)[0][0]
+    order.orderId = order_id
 
-    return OrderRepo.create_order(order)[0][0]
+    order_notifier.notify(order)
+    return order_id
 
 
 @router.get('/orders/{id}', status_code=200)
