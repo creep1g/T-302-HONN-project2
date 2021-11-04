@@ -46,6 +46,7 @@ async def create_order(order: OrderModelSend,
     if requests.get(f'''{merchant_service}/{order.merchantId}''').json()["allowsDiscount"] is False and order.discount > 0:
         return JSONResponse(status_code=400, content={"message": "Merchant does not allow discount"})
 
+    requests.patch(f'''{inventory_service}/{order.productId}''')
     order.totalPrice = get_total_price(order)
     order_id = OrderRepo.create_order(order)[0][0]
     order.orderId = order_id
