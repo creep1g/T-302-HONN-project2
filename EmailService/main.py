@@ -27,9 +27,9 @@ def get_connection():
         pika.ConnectionParameters(host='rabbit1', port=5672)
     )
     channel = connection.channel()
-    channel.queue_declare(queue='paymentFailure')  # Declare a queue
     channel.queue_declare(queue='order')  # Declare a queue
     channel.queue_declare(queue='paymentSuccess')  # Declare a queue
+    channel.queue_declare(queue='paymentFailure')  # Declare a queue
     return channel
 
 
@@ -91,15 +91,15 @@ if __name__ == '__main__':
     container = arrange()
     connection = get_connection()
     print("IN email main")
+    connection.basic_consume(queue='paymentFailure',
+                             on_message_callback=callback_payment_failed,
+                             auto_ack=True)
+    connection.start_consuming()
     connection.basic_consume(queue='paymentSuccess',
                              on_message_callback=callback_payment_success,
                              auto_ack=True)
     connection.start_consuming()
     connection.basic_consume(queue='order',
                              on_message_callback=callback_order,
-                             auto_ack=True)
-    connection.start_consuming()
-    connection.basic_consume(queue='paymentFailure',
-                             on_message_callback=callback_payment_failed,
                              auto_ack=True)
     connection.start_consuming()

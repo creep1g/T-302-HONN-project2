@@ -27,5 +27,5 @@ class EmailHandler:
     def payment_failed_email(self, merchant_email, buyer_email, orderId):
         to = [merchant_email, buyer_email]
         subject = "Order has been purchased"
-        contents = f'''Order {orderId} purchasehasfailed'''
+        contents = f'''Order {orderId} purchase has failed'''
         self.send_email(to, subject, contents)
