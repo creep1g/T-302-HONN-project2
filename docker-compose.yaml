@@ -120,6 +120,16 @@ services:
       - storenet
       - payment_net
 
+  email_service:
+    build: ./EmailService
+    stdin_open: true
+    tty: true
+    depends_on:
+      - rabbitmq
+    networks:
+      - storenet
+      - emailnet
+
   rabbitmq:
     image: "rabbitmq:3-management"
     hostname: "rabbit1"
@@ -153,6 +163,9 @@ networks:
   payment_net:
     driver: bridge
 
+  emailnet:
+    driver: bridge
+
 volumes:
   payment_service:
   payment-db_data:
@@ -165,3 +178,4 @@ volumes:
   buyer_service:
   inventory_service:
   inventory-db_data:
+  email_service:
