@@ -29,8 +29,8 @@ def get_connection():
     channel1 = connection.channel()
     channel2 = connection.channel()
     channel1.queue_declare(queue='order')  # Declare a queue
-    channel2.queue_declare(queue='paymentSuccess')  # Declare a queue
-    channel2.queue_declare(queue='paymentFailure')  # Declare a queue
+    channel2.queue_declare(queue='paymentSuccessEmail')  # Declare a queue
+    channel2.queue_declare(queue='paymentFailureEmail')  # Declare a queue
     return (channel1, channel2)
 
 
@@ -92,14 +92,14 @@ if __name__ == '__main__':
     container = arrange()
     connection_order, connection_pay = get_connection()
     print("IN email main")
-    connection_pay.basic_consume(queue='paymentFailure',
-                             on_message_callback=callback_payment_failed,
-                             auto_ack=True)
-    connection_pay.basic_consume(queue='paymentSuccess',
-                             on_message_callback=callback_payment_success,
-                             auto_ack=True)
+    connection_pay.basic_consume(queue='paymentFailureEmail',
+                                 on_message_callback=callback_payment_failed,
+                                 auto_ack=True)
+    connection_pay.basic_consume(queue='paymentSuccessEmail',
+                                 on_message_callback=callback_payment_success,
+                                 auto_ack=True)
     connection_pay.start_consuming()
     connection_order.basic_consume(queue='order',
-                             on_message_callback=callback_order,
-                             auto_ack=True)
+                                   on_message_callback=callback_order,
+                                   auto_ack=True)
     connection_order.start_consuming()
