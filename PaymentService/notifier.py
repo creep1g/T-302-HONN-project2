@@ -12,10 +12,16 @@ class PaymentNotifier:
             self.__conn.basic_publish(exchange='',
                                       routing_key='paymentSuccess',
                                       body=body)
+            self.__conn.basic_publish(exchange='',
+                                      routing_key='paymentSuccessEmail',
+                                      body=body)
         else:
             print("Payment Failed")
             self.__conn.basic_publish(exchange='',
                                       routing_key='paymentFailure',
+                                      body=body)
+            self.__conn.basic_publish(exchange='',
+                                      routing_key='paymentFailureEmail',
                                       body=body)
 
     @retry(pika.exceptions.AMQPConnectionError, delay=5, jitter=(1, 3))
@@ -26,5 +32,6 @@ class PaymentNotifier:
         channel = connection.channel()
         channel.queue_declare(queue='paymentSuccess')
         channel.queue_declare(queue='paymentFailure')
-
+        channel.queue_declare(queue='paymentSuccessEmail')
+        channel.queue_declare(queue='paymentFailureEmail')
         return channel
