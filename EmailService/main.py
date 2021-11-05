@@ -27,9 +27,9 @@ def get_connection():
         pika.ConnectionParameters(host='rabbit1', port=5672)
     )
     channel = connection.channel()
-    channel.queue_declare(queue='paymentSuccess')  # Declare a queue
     channel.queue_declare(queue='paymentFailure')  # Declare a queue
     channel.queue_declare(queue='order')  # Declare a queue
+    channel.queue_declare(queue='paymentSuccess')  # Declare a queue
     return channel
 
 
@@ -39,16 +39,11 @@ def callback_order(ch, method, properties, body):
     body = json.loads(body)
 
     merchantId = (body["merchantId"])
-    print("merchantId: ", merchantId)
     merchant = requests.get(f'''{merchant_service}/{merchantId}''').json()
-    print("merchant: ", merchant)
     merchant_email = merchant["email"]
-    print("merchant_email: ", merchant_email)
-
     buyerId = (body["buyerId"])
     buyer = requests.get(f'''{buyer_service}/{buyerId}''').json()
     buyer_email = buyer["email"]
-    print("buyer_email: ", buyer_email)
     orderId = (body["orderId"])
     totalPrice = (body["totalPrice"])
     productId = (body["productId"])
@@ -57,26 +52,54 @@ def callback_order(ch, method, properties, body):
     handler = container.email_handler_provider()
     handler.order_created_email(
         merchant_email, buyer_email, orderId, productName, totalPrice)
-    # Email body-ið ætti að innihalda id-ið á kaupunum, nafn-ið á vörunni og verðið á kaupunum
 
 
 def callback_payment_success(ch, method, properties, body):
-    print("IN callback_payment_success")
+    print(">>>>>>>>>< IN callback_payment_success <>>>>>>>>>>>>>>")
     body = body.decode("utf-8")
     body = json.loads(body)
+
+    merchantId = (body["merchantId"])
+    merchant = requests.get(f'''{merchant_service}/{merchantId}''').json()
+    merchant_email = merchant["email"]
+
+    buyerId = (body["buyerId"])
+    buyer = requests.get(f'''{buyer_service}/{buyerId}''').json()
+    buyer_email = buyer["email"]
+    orderId = (body["orderId"])
+    handler = container.email_handler_provider()
+    handler.payment_successful_email(merchant_email, buyer_email, orderId)
 
 
 def callback_payment_failed(ch, method, properties, body):
-    print("IN callback_payment_failed")
+    print(">>>>>>>< IN callback_payment_failed >>>>>>><")
     body = body.decode("utf-8")
     body = json.loads(body)
+    merchantId = (body["merchantId"])
+    merchant = requests.get(f'''{merchant_service}/{merchantId}''').json()
+    merchant_email = merchant["email"]
+
+    buyerId = (body["buyerId"])
+    buyer = requests.get(f'''{buyer_service}/{buyerId}''').json()
+    buyer_email = buyer["email"]
+    orderId = (body["orderId"])
+    handler = container.email_handler_provider()
+    handler.payment_failed_email(merchant_email, buyer_email, orderId)
 
 
 if __name__ == '__main__':
     container = arrange()
     connection = get_connection()
     print("IN email main")
+    connection.basic_consume(queue='paymentSuccess',
+                             on_message_callback=callback_payment_success,
+                             auto_ack=True)
+    connection.start_consuming()
     connection.basic_consume(queue='order',
                              on_message_callback=callback_order,
+                             auto_ack=True)
+    connection.start_consuming()
+    connection.basic_consume(queue='paymentFailure',
+                             on_message_callback=callback_payment_failed,
                              auto_ack=True)
     connection.start_consuming()

@@ -13,14 +13,19 @@ class EmailHandler:
         self.yag.send(to, subject, contents)
 
     def order_created_email(self, merchant_email, buyer_email, orderId, productName, totalPrice):
-        print("$$$$$$$$$$$$$ IN order_created_email &&&&&&&&&&&&&&&&&&&&")
         to = [merchant_email, buyer_email]
         subject = "Order has been created"
         contents = [str(orderId), productName, str(totalPrice)]
         self.send_email(to, subject, contents)
 
-    def payment_successful_email(self):
-        pass
+    def payment_successful_email(self, merchant_email, buyer_email, orderId):
+        to = [merchant_email, buyer_email]
+        subject = "Order has been purchased"
+        contents = f'''Order {orderId} has been successfully purchased'''
+        self.send_email(to, subject, contents)
 
-    def payment_failed_email(self):
-        pass
+    def payment_failed_email(self, merchant_email, buyer_email, orderId):
+        to = [merchant_email, buyer_email]
+        subject = "Order has been purchased"
+        contents = f'''Order {orderId} purchasehasfailed'''
+        self.send_email(to, subject, contents)
